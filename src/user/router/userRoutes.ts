@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
-import { allUsers } from '../controllers/userControler';
+import { allUsers, newUser } from '../controllers/userControler';
 const userRouter = express.Router();
 
-userRouter.get("/new", [], allUsers)
+userRouter.get("/", [], allUsers);
+userRouter.post("/new", [], newUser);
 
 
 
