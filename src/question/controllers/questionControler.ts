@@ -105,9 +105,10 @@ const bulkuploadQsn = async (req: Request, res: Response) => {
   try {
 
     const results: any[] = [];
+    console.log(req.file);
+    const file_name=req.file ? req.file.filename : "";
 
-    const filePath = path.join(__dirname, "..", "..", "..", "uploads", "question.csv");
-
+   const filePath = path.join(__dirname, "..", "..", "..", "uploads", file_name);
     console.log('filePath', filePath);
 
 
@@ -126,11 +127,11 @@ const bulkuploadQsn = async (req: Request, res: Response) => {
           });
           await question.save();
 
-          console.log("looooooooooooop");
+         
         }
         console.log("done");
 
-        sendResponse(res, true, 200, "get catagory qsn", []);
+        sendResponse(res, true, 200, "csv Upload successfully.", []);
       });
 
 
