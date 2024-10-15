@@ -20,6 +20,16 @@ app.use("/api/qsn", questionRouter );
 app.get("/api/ping", (req: Request, res: Response) => {
     res.json({ message: "Server is running" });
 })
+
+
+declare global {
+    namespace Express {
+      interface Request {
+        file?: Multer.File | undefined;
+      }
+    }
+  }
+
 // DB Connection
 connect();
 app.listen(PORT, (): void => {

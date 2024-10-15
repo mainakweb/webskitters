@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { userLogin, allUsers, newUser, updateUser, viewProfile } from '../controllers/userControler';
 // import multer from 'multer';
 // const upload = multer({ dest: 'uploads/' });
-import upload from '../middlewares/uploadMiddleware';
+import { upload } from '../middlewares/uploadMiddleware';
 
 
 import { authMiddleware } from '../middlewares/authMiddleware';

@@ -1,6 +1,8 @@
 import { UpdateQuery, FilterQuery, QueryOptions } from 'mongoose';
 import { IQuestion, QuestionModel } from '../models/questionModel';
 import { CategoryModel, ICategory } from '../models/categoryModel';
+import csv from 'csv-parser';
+import fs from 'fs';
 
 export function findQsn(query: FilterQuery<IQuestion>, options: QueryOptions = { lean: true }) {
     return QuestionModel.find({})
@@ -32,14 +34,14 @@ export function createCatagory(input: ICategory): Promise<ICategory> {
 export async function questionListByCategory() {
 
     try {
-  
+
         const result = await QuestionModel.aggregate([
-           
+
             {
                 $unwind: "$categories"
             },
             {
-                $lookup: {  
+                $lookup: {
                     from: "categories",
                     localField: "categories",
                     foreignField: "id",
@@ -72,14 +74,14 @@ export async function questionListByCategory() {
 
 export async function aggregateQuestionsByCategory(categoryId: number) {
     try {
-  
+
         const result = await QuestionModel.aggregate([
-           
+
             {
                 $unwind: "$categories"
             },
             {
-                $lookup: {  
+                $lookup: {
                     from: "categories",
                     localField: "categories",
                     foreignField: "id",
@@ -90,7 +92,7 @@ export async function aggregateQuestionsByCategory(categoryId: number) {
                 $unwind: "$categoryName"
             },
             {
-                $match: { "categoryName.id": categoryId  }
+                $match: { "categoryName.id": categoryId }
             },
             {
                 $group: {
@@ -111,3 +113,32 @@ export async function aggregateQuestionsByCategory(categoryId: number) {
         throw error;
     }
 }
+
+
+export const addBulkQuestions = async (req: Request, res: Response) => {
+    try {
+        // const file = req.file;
+        const file: { [key: string]: any } = {};
+        const results: any[] = [];
+
+        fs.createReadStream(file?.path)
+            .pipe(csv())
+            .on('data', (data) => results.push(data))
+            .on('end', async () => {
+
+                console.log("csv files", results);
+                for (const result of results) {
+                    const question = new QuestionModel({
+                        serialNo: result.serialNo,
+                        questionText: result.questionText,
+                        marks: result.marks,
+                        categories: result.categories.split(',').map((id: string) => id.trim())
+                    });
+                    await question.save();
+                }
+                res.json();
+            });
+    } catch (error) {
+        throw error;
+    }
+};

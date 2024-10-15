@@ -29,4 +29,21 @@ const upload = multer({
   }
 });
 
-export default upload;
+
+const csvUpload = multer({
+  storage: storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit file size to 2MB
+  fileFilter: (req, file, cb) => {
+    const filetypes = /csv/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('csv only!'));
+    }
+  }
+});
+
+export { upload , csvUpload};

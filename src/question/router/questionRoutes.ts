@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
-import { add, addCategory, getCategory, getQsnAndCat, getQsnByCat, view } from '../controllers/questionControler';
+import { add, addCategory, bulkuploadQsn, getCategory, getQsnAndCat, getQsnByCat, view } from '../controllers/questionControler';
+import { csvUpload } from '../../user/middlewares/uploadMiddleware';
 
 const questionRouter = express.Router();
 
@@ -11,6 +12,7 @@ questionRouter.get('/category', [], getCategory);
 questionRouter.get('/qsnListByCategory', [], getQsnByCat);
 questionRouter.get('/qsnList', [], getQsnAndCat);
 questionRouter.post('/addCategory', [], addCategory);
+questionRouter.post('/bulkupload', [csvUpload.single("file")], bulkuploadQsn);
 
 
 export { questionRouter };
