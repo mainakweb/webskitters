@@ -29,7 +29,45 @@ export function createCatagory(input: ICategory): Promise<ICategory> {
     const category = new CategoryModel(input); // Create a new instance of the user
     return category.save(); // Save it to the database and return the result as a promise
 }
+export async function questionListByCategory() {
 
+    try {
+  
+        const result = await QuestionModel.aggregate([
+           
+            {
+                $unwind: "$categories"
+            },
+            {
+                $lookup: {  
+                    from: "categories",
+                    localField: "categories",
+                    foreignField: "id",
+                    as: "categoryName"
+                }
+            },
+            {
+                $unwind: "$categoryName"
+            },
+            {
+                $group: {
+                    _id: "$categoryName",
+                    questions: {
+                        $push: {
+                            serialNo: "$serialNo",
+                            questionText: "$questionText"
+                        }
+                    }
+                }
+            }
+        ])
+
+        console.log("resresultultresultresultresult", result);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 export async function aggregateQuestionsByCategory(categoryId: number) {

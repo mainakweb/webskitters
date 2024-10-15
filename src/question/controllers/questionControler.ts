@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { sendResponse } from '../../utils/utils';
-import { aggregateQuestionsByCategory, allCatagory, createCatagory, createQuestions, findAndUpdate, findQsn } from '../services/questionService';
+import { aggregateQuestionsByCategory, allCatagory, createCatagory, createQuestions, findAndUpdate, findQsn, questionListByCategory } from '../services/questionService';
 
 
 
@@ -85,6 +85,21 @@ const getQsnByCat = async (req: Request, res: Response) => {
   }
 
 }
+const getQsnAndCat = async (req: Request, res: Response) => {
+
+  try {
+
+    const result = await questionListByCategory();
+    sendResponse(res, true, 200, "get catagory qsn", result);
+
+  } catch (error) {
+    sendResponse(res, false, 200, "somthing went wrong!", error);
+
+  }
+
+}
+
+
 
 
 
@@ -118,6 +133,7 @@ export {
   bulkupload,
   getCategory,
   addCategory,
-  getQsnByCat
+  getQsnByCat,
+  getQsnAndCat
 
 }
