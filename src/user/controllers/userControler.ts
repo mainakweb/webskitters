@@ -48,13 +48,16 @@ const newUser = async (req: Request, res: Response) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Check if a file is uploaded
+        const profilePicture = req.file ? req.file.path : "";
 
         const resp = await createUser({
             name,
             email,
             password: hashedPassword,
             age,
-            sex
+            sex,
+            profilePicture,
           });
         sendResponse(res, true, 200, "User registered successfully", resp);
 
@@ -85,13 +88,10 @@ const updateUser = async (req: Request, res: Response) => {
 const viewProfile = async (req: Request, res: Response) => {
     const {id} = req.body.user;
     try {
-       // const { id }= req.params.id;
       const user = await UserModel.findById(id);
-     // if (!user) return res.status(404).json({ msg: 'User not found' });
      if (!user) sendResponse(res, false, 200, "User not found", null);
      sendResponse(res, true, 200, "Successfully fetched users", user);
     } catch (error) {
-      //res.status(500).json({ msg: 'Server error' });
       sendResponse(res, false, 500, "fetched user error", error);
     }
   };

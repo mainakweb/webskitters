@@ -7,6 +7,7 @@ interface IUserDocument extends Document {
     name: string,
     age: number,
     sex: string,
+    profilePicture:string,
 }
 interface IUser {
     email: string;
@@ -14,6 +15,7 @@ interface IUser {
     name: string,
     age: number,
     sex: string,
+    profilePicture:string,
 }
 
 const userSchema = new Schema<IUser>({
@@ -22,6 +24,8 @@ const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     age: { type: Number },
     sex: { type: String },
+    profilePicture: { type: String },
+    
 });
 
 const UserModel = model<IUser>("User", userSchema);
