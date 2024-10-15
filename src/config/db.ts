@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-const URI = "mongodb+srv://mainakdutta16:A6JBaMSeHuPWheES@mongocluster.prmjy.mongodb.net/";
+// Load environment variables from .env file
+dotenv.config();
+
+const URI = process.env.MONGO_URI as string; //"mongodb+srv://mainakdutta16:A6JBaMSeHuPWheES@mongocluster.prmjy.mongodb.net/";
 
 const connect = async (): Promise<void> => {
   try {

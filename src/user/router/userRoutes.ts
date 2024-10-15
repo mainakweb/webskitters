@@ -11,7 +11,7 @@ const userRouter = express.Router();
 userRouter.post('/login', userLogin);
 userRouter.get("/", [], allUsers);
 userRouter.post("/new", [upload.single('profilePicture')], newUser);
-userRouter.post("/update", [], updateUser);
+userRouter.post("/update", [upload.single('profilePicture'), authMiddleware], updateUser);
 userRouter.get('/profile/', [authMiddleware], viewProfile);
 
 

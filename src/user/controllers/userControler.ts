@@ -68,13 +68,21 @@ const newUser = async (req: Request, res: Response) => {
 
 }
 const updateUser = async (req: Request, res: Response) => {
-
+  const {email, name, age, sex } = req.body;
     try {
 
         console.log("req.body)req.body)", req.body);
-        const { name, age, sex } = req.body;
+        
+        const {id} = req.body.user;
+let updateData;
+        //const updateData = req.file ? {email, name, age, sex, profilePicture : req.file.path}req.file.path : "";
+        if(req.file) {
+          updateData = {email, name, age, sex, profilePicture : req.file.path};
+        } else {
+          updateData = {email, name, age, sex};
+        }
+        const resp = await UserModel.findByIdAndUpdate(id, updateData , { new: true }); // Return updated document
 
-        const resp = await findAndUpdate({ age, sex }, { name }, { upsert: true })
         sendResponse(res, true, 200, "Successfully fetched users", resp);
 
     } catch (error) {
