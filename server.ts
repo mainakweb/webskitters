@@ -2,9 +2,13 @@ import express, { Request, Response } from 'express';
 import { userRouter } from './src/user/router/userRoutes';
 import connect from './src/config/db';
 import { questionRouter } from './src/question/router/questionRoutes';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT as string;
 
 app.use(express.json());
 // USER ROUTES
