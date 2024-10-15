@@ -22,13 +22,6 @@ app.get("/api/ping", (req: Request, res: Response) => {
 })
 
 
-declare global {
-    namespace Express {
-      interface Request {
-        file?: Multer.File | undefined;
-      }
-    }
-  }
 
 // DB Connection
 connect();

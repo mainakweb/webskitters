@@ -1,8 +1,10 @@
 import express, { Request, Response } from 'express';
 import { sendResponse } from '../../utils/utils';
-import { addBulkQuestions, aggregateQuestionsByCategory, allCatagory, createCatagory, createQuestions, findAndUpdate, findQsn, questionListByCategory } from '../services/questionService';
-
-
+import { aggregateQuestionsByCategory, allCatagory, createCatagory, createQuestions, findQsn, questionListByCategory } from '../services/questionService';
+import csv from 'csv-parser';
+import fs from 'fs';
+import path from 'path';
+import { QuestionModel } from '../models/questionModel';
 
 
 // User login controller
@@ -72,10 +74,10 @@ const getQsnByCat = async (req: Request, res: Response) => {
     // const catId: string | undefined = Array.isArray(req.query.catId) ? req.query.catId[0] : req.query.catId;
     // const catId : string  | undefined = req.query.id;
 
-  const catId = req.query.catId as string;
-  const id: number = parseInt(catId);
+    const catId = req.query.catId as string;
+    const id: number = parseInt(catId);
     console.log("ididididid", id);
-    
+
     const result = await aggregateQuestionsByCategory(id);
     sendResponse(res, true, 200, "get catagory qsn", result);
 
@@ -102,8 +104,35 @@ const bulkuploadQsn = async (req: Request, res: Response) => {
 
   try {
 
-    // const result = await addBulkQuestions(req, res);
-    sendResponse(res, true, 200, "get catagory qsn", []);
+    const results: any[] = [];
+
+    const filePath = path.join(__dirname, "..", "..", "..", "uploads", "question.csv");
+
+    console.log('filePath', filePath);
+
+
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', async () => {
+
+        console.log("csv files", results);
+        for (const result of results) {
+          const question = new QuestionModel({
+            serialNo: result.serialNo,
+            questionText: result.questionText,
+            marks: result.marks,
+            categories: result.categories.split(',').map((id: string) => id.trim())
+          });
+          await question.save();
+
+          console.log("looooooooooooop");
+        }
+        console.log("done");
+
+        sendResponse(res, true, 200, "get catagory qsn", []);
+      });
+
 
   } catch (error) {
     sendResponse(res, false, 200, "somthing went wrong!", error);

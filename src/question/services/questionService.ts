@@ -1,8 +1,7 @@
 import { UpdateQuery, FilterQuery, QueryOptions } from 'mongoose';
 import { IQuestion, QuestionModel } from '../models/questionModel';
 import { CategoryModel, ICategory } from '../models/categoryModel';
-import csv from 'csv-parser';
-import fs from 'fs';
+
 
 export function findQsn(query: FilterQuery<IQuestion>, options: QueryOptions = { lean: true }) {
     return QuestionModel.find({})
@@ -115,30 +114,39 @@ export async function aggregateQuestionsByCategory(categoryId: number) {
 }
 
 
-export const addBulkQuestions = async (req: Request, res: Response) => {
-    try {
-        // const file = req.file;
-        const file: { [key: string]: any } = {};
-        const results: any[] = [];
+// export const addBulkQuestions = async (res: Response) => {
+//     try {
+//         // const file = req.file;
+//         const file: { [key: string]: any } = {};
+//         const results: any[] = [];
 
-        fs.createReadStream(file?.path)
-            .pipe(csv())
-            .on('data', (data) => results.push(data))
-            .on('end', async () => {
+//         const filePath = path.join( __dirname, "..", "..", "..","uploads", "question.csv");
 
-                console.log("csv files", results);
-                for (const result of results) {
-                    const question = new QuestionModel({
-                        serialNo: result.serialNo,
-                        questionText: result.questionText,
-                        marks: result.marks,
-                        categories: result.categories.split(',').map((id: string) => id.trim())
-                    });
-                    await question.save();
-                }
-                res.json();
-            });
-    } catch (error) {
-        throw error;
-    }
-};
+//         console.log('filePath', filePath);
+        
+
+//         fs.createReadStream(filePath)
+//             .pipe(csv())
+//             .on('data', (data) => results.push(data))
+//             .on('end', async () => {
+
+//                 console.log("csv files", results);
+//                 for (const result of results) {
+//                     const question = new QuestionModel({
+//                         serialNo: result.serialNo,
+//                         questionText: result.questionText,
+//                         marks: result.marks,
+//                         categories: result.categories.split(',').map((id: string) => id.trim())
+//                     });
+//                     await question.save();
+
+//                     console.log("looooooooooooop");
+//                 }
+//                 console.log("done");
+//                 res.statusCode(200)
+//                 // sendResponse(res, true, 200, "get catagory qsn", []);
+//             });
+//     } catch (error) {
+//         throw error;
+//     }
+// };
