@@ -5,12 +5,12 @@ export interface ICategory extends Document {
   id: number;
 }
 
-const CategorySchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   id: { type: Number, required: true, unique: true }
 });
 
 // export default mongoose.model<ICategory>('Category', CategorySchema);
 
-export const QuestionModel = model<ICategory>('Category', CategorySchema);
+export const CategoryModel = model<ICategory>('Category', categorySchema);
  
